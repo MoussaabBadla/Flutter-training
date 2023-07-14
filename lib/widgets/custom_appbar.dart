@@ -8,7 +8,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Image.asset("assets/images/Appbar.png"),
+        Image.asset(
+          "assets/images/Appbar.png",
+          width: MediaQuery.of(context).size.width,
+          fit: BoxFit.cover,
+        ),
         Positioned(
           top: 60,
           left: 20,

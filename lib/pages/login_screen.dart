@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/custom_appbar.dart';
@@ -5,16 +6,39 @@ import '../widgets/custom_button.dart';
 import '../widgets/custom_textfield.dart';
 import '../widgets/password_textfield.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
   static String routeName = '/login';
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  late TextEditingController _emailController;
+  late TextEditingController _passwordController;
+  @override
+  void initState() {
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: const CustomAppBar(title: "Alunno"),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(
           horizontal: 20,
         ),
@@ -29,17 +53,31 @@ class LoginScreen extends StatelessWidget {
             const SizedBox(
               height: 50,
             ),
-            const CustomTextFormField(),
+            CustomTextFormField(
+              controller: _emailController,
+            ),
             const SizedBox(
               height: 26,
             ),
-            const PasswordTextField(),
+            PasswordTextField(
+              controller: _passwordController,
+            ),
             const SizedBox(
               height: 80,
             ),
             CustomBotton(
               color: Colors.black,
-              onPressed: () {},
+              onPressed: () async {
+                try {
+                  final user = await auth.createUserWithEmailAndPassword(
+                      email: _emailController.text,
+                      password: _passwordController.text);
+
+                  print(user);
+                } catch (e) {
+                  print(e);
+                }
+              },
               text: "Se connecter",
             ),
             const SizedBox(
@@ -88,4 +126,3 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
-
